@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+const MaxInt = int(^uint(0) >> 1)
+const MinInt = -MaxInt - 1
+
 func getMinWithIndex(array []int) (int, int) {
 	min := array[0]
 	minIndex := 0
@@ -36,12 +39,15 @@ func getMaxWithIndex(array []int) (int, int) {
 func processLine(line string) int {
 	returned := 0
 	// find earliest digit first
-	digitIndexes := [9]int{1000000000000, 1000000000000, 1000000000000,
-		1000000000000, 1000000000000, 1000000000000,
-		1000000000000, 1000000000000, 1000000000000}
-	digits := [9]string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
+	digitIndexes := [9]int{
+		MaxInt, MaxInt, MaxInt,
+		MaxInt, MaxInt, MaxInt,
+		MaxInt, MaxInt, MaxInt}
+	digits := [9]string{
+		"1", "2", "3", "4", "5", "6", "7", "8", "9"}
 	wordIndexes := digitIndexes
-	words := [9]string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
+	words := [9]string{
+		"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 
 	for index, word := range words {
 		earliest := strings.Index(line, word)
@@ -67,8 +73,11 @@ func processLine(line string) int {
 	}
 
 	// do the same and find latest digit
-	digitIndexes = [9]int{0}
-	wordIndexes = [9]int{0}
+	digitIndexes = [9]int{
+		MinInt, MinInt, MinInt,
+		MinInt, MinInt, MinInt,
+		MinInt, MinInt, MinInt}
+	wordIndexes = digitIndexes
 
 	for index, word := range words {
 		latest := strings.LastIndex(line, word)
