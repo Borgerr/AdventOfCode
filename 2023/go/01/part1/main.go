@@ -18,7 +18,9 @@ func processLine(line string) int {
 		}
 	}
 
-	i, err := strconv.Atoi(string(digits))
+	firstAndLast := []rune{digits[0], digits[len(digits)-1]}
+
+	i, err := strconv.Atoi(string(firstAndLast))
 	if err != nil {
 		panic(err)
 	}
@@ -44,6 +46,7 @@ func main() {
 
 	total := 0
 	for _, line := range lines {
+		fmt.Printf("%d\n", processLine(line))
 		total += processLine(line)
 	}
 
