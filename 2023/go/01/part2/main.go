@@ -36,9 +36,11 @@ func getMaxWithIndex(array []int) (int, int) {
 func processLine(line string) int {
 	returned := 0
 	// find earliest digit first
-	digitIndexes := [9]int{0}
+	digitIndexes := [9]int{1000000000000, 1000000000000, 1000000000000,
+		1000000000000, 1000000000000, 1000000000000,
+		1000000000000, 1000000000000, 1000000000000}
 	digits := [9]string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
-	wordIndexes := [9]int{0}
+	wordIndexes := digitIndexes
 	words := [9]string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 
 	for index, word := range words {
@@ -113,7 +115,6 @@ func main() {
 
 	total := 0
 	for _, line := range lines {
-		fmt.Printf("%d\n", processLine(line))
 		total += processLine(line)
 	}
 
