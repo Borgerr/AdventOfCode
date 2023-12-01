@@ -11,7 +11,7 @@ import (
 )
 
 func processLine(line string) int {
-	digits := make([]rune, 2, 2)
+	digits := make([]rune, 0, 2)
 	for _, c := range line {
 		if unicode.IsDigit(c) {
 			digits = append(digits, c)
@@ -26,7 +26,7 @@ func processLine(line string) int {
 }
 
 func main() {
-	lines := make([]string, 1000, 1000)
+	lines := make([]string, 0, 1000)
 	absPath, _ := filepath.Abs("./01/part1/input.txt")
 	file, err := os.Open(absPath)
 	if err != nil {
@@ -36,7 +36,7 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		lines = append(lines, scanner.Text())
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
