@@ -11,7 +11,7 @@ import (
 )
 
 func processLine(line string) int {
-	digits := make([]rune, 0, 2)
+	digits := make([]rune, 0, 50)
 	for _, c := range line {
 		if unicode.IsDigit(c) {
 			digits = append(digits, c)
