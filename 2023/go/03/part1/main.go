@@ -18,7 +18,7 @@ type position struct {
 
 func findSymbolPositions(strings []string) []position {
 	returned := make([]position, 0, 100000)
-	re := regexp.MustCompile(`[\$@#%&\*-\+=/]`)
+	re := regexp.MustCompile(`[\$@#%&\*\-\+=/]`)
 	for y, str := range strings {
 		for _, l := range re.FindAllStringIndex(str, -1) {
 			x := l[0]
@@ -53,7 +53,7 @@ func getTotal(strings []string, positions []position) int {
 
 func main() {
 	lines := make([]string, 0, 140)
-	absPath, _ := filepath.Abs("./03/sample.txt")
+	absPath, _ := filepath.Abs("./03/input.txt")
 	file, err := os.Open(absPath)
 	if err != nil {
 		log.Fatal(err)
