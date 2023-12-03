@@ -29,7 +29,7 @@ func processLine(line string) int {
 
 func main() {
 	lines := make([]string, 0, 1000)
-	absPath, _ := filepath.Abs("./01/part1/input.txt")
+	absPath, _ := filepath.Abs("./01/input.txt")
 	file, err := os.Open(absPath)
 	if err != nil {
 		log.Fatal(err)

@@ -11,21 +11,28 @@ import (
 	"strings"
 )
 
-func gamePossible(gameSet [][]int) bool {
-	fmt.Println(gameSet)
+func gamePower(gameSet [][]int) int {
+	maxRed := 0
+	maxGreen := 0
+	maxBlue := 0
 	for _, set := range gameSet {
-		// set : [red, green, blue]
-		if (set[0] > 12) || (set[1] > 13) || (set[2] > 14) {
-			return false
+		if set[0] > maxRed {
+			maxRed = set[0]
+		}
+		if set[1] > maxGreen {
+			maxGreen = set[1]
+		}
+		if set[2] > maxBlue {
+			maxBlue = set[2]
 		}
 	}
 
-	return true
+	return maxRed * maxGreen * maxBlue
 }
 
 func main() {
 	lines := make([][][]int, 0, 100)
-	absPath, _ := filepath.Abs("./02/part1/input.txt")
+	absPath, _ := filepath.Abs("./02/input.txt")
 	file, err := os.Open(absPath)
 	if err != nil {
 		log.Fatal(err)
@@ -75,12 +82,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(lines)
 	total := 0
-	for index, line := range lines {
-		if gamePossible(line) {
-			total += index + 1
-		}
+	for _, line := range lines {
+		total += gamePower(line)
 	}
 
 	fmt.Println(total)
