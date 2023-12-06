@@ -11,7 +11,11 @@ import (
 	"sync"
 )
 
-var locationsMutex sync.Mutex
+type compactRange struct {
+	destRangeStart   int
+	sourceRangeStart int
+	rangeLength      int
+}
 
 func getSeedNumbers(line string) []int {
 	// seeds are on first line
@@ -28,7 +32,9 @@ func getSeedNumbers(line string) []int {
 	return seedNumbers
 }
 
-func getMap(lines []string) (map[int]int, int) {
+func getMap(lines []string) ([]compactRange, int) {
+	returned := make([]compactRange, 100)
+
 	mapLines := make([]string, 0, 20)
 	var nextStart int
 	for lineNum, line := range lines {
@@ -39,7 +45,6 @@ func getMap(lines []string) (map[int]int, int) {
 		mapLines = append(mapLines, line)
 	}
 
-	m := make(map[int]int)
 	for _, mapLine := range mapLines {
 		mapSubstrings := strings.Split(mapLine, " ")
 		l := make([]int, 0, 3)
@@ -50,32 +55,26 @@ func getMap(lines []string) (map[int]int, int) {
 			}
 			l = append(l, i)
 		}
-		/*
-			destRangeStart := l[0]
-			sourceRangeStart := l[1]
-			rangeLength := l[2]
-		*/
-		for i := 0; i < l[2]; i++ {
-			m[l[1]+i] = l[0] + i
-		}
+		returned = append(returned, compactRange{destRangeStart: l[0], sourceRangeStart: l[1], rangeLength: l[2]})
 	}
 
-	return m, nextStart
+	return returned, nextStart
 }
 
-func lookup(val int, m *map[int]int) int {
-	for key := range *m {
-		if val == key {
-			return (*m)[val]
+func lookup(val int, m *[]compactRange) int {
+	for _, r := range *m {
+		if (val >= r.sourceRangeStart) && (val < r.sourceRangeStart+r.rangeLength) {
+			return r.destRangeStart + (val - r.sourceRangeStart)
 		}
 	}
+
 	return val
 }
 
 func getLocations(seeds []int,
-	sed2Soil *map[int]int, soil2Fert *map[int]int, fert2Wat *map[int]int,
-	wat2Lit *map[int]int, lit2Temp *map[int]int, temp2Hum *map[int]int,
-	hum2Loc *map[int]int) []int {
+	sed2Soil *[]compactRange, soil2Fert *[]compactRange, fert2Wat *[]compactRange,
+	wat2Lit *[]compactRange, lit2Temp *[]compactRange, temp2Hum *[]compactRange,
+	hum2Loc *[]compactRange) []int {
 	locations := make([]int, 0, len(seeds))
 
 	var wg sync.WaitGroup
@@ -93,8 +92,6 @@ func getLocations(seeds []int,
 			temp := lookup(light, lit2Temp)
 			hum := lookup(temp, temp2Hum)
 			location := lookup(hum, hum2Loc)
-			locationsMutex.Lock()
-			defer locationsMutex.Unlock()
 			locations = append(locations, location)
 		}(seed)
 	}
@@ -142,7 +139,7 @@ func main() {
 		&seedToSoilMap, &soilToFertMap, &fertToWaterMap,
 		&waterToLightMap, &lightToTempMap, &tempToHumMap, &humToLocMap)
 
-	minLoc := 0xffffff
+	minLoc := 0xfffffffffffffff
 	for _, location := range locations {
 		if location < minLoc {
 			minLoc = location
